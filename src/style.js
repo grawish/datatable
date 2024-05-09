@@ -11,7 +11,7 @@ export default class Style {
 
         linkProperties(this, this.instance, [
             'options', 'datamanager', 'columnmanager',
-            'header', 'footer', 'bodyScrollable', 'datatableWrapper',
+            'header', 'footer', 'frozenBodyScrollable', 'bodyScrollable', 'datatableWrapper',
             'getColumn', 'bodyRenderer'
         ]);
 
@@ -24,6 +24,7 @@ export default class Style {
 
         this.bindResizeWindow();
         this.bindScrollHeader();
+        this.bindScrollFrozenColumn();
     }
 
     get stylesheet() {
@@ -39,6 +40,23 @@ export default class Style {
         }
     }
 
+    bindScrollFrozenColumn() {
+        $.on(this.bodyScrollable, 'scroll', (e) => {
+
+            requestAnimationFrame(() => {
+                const top = e.target.scrollTop;
+                this.frozenBodyScrollable.scrollTo(0, top);
+            });
+        });
+        $.on(this.frozenBodyScrollable, 'scroll', (e) => {
+
+            requestAnimationFrame(() => {
+                const top = e.target.scrollTop;
+                this.bodyScrollable.scrollTo(0, top);
+            });
+        });
+    }
+
     bindScrollHeader() {
         this._settingHeaderPosition = false;
 
@@ -49,13 +67,13 @@ export default class Style {
 
             requestAnimationFrame(() => {
                 const left = -e.target.scrollLeft;
-
                 $.style(this.header, {
                     transform: `translateX(${left}px)`
                 });
                 $.style(this.footer, {
                     transform: `translateX(${left}px)`
                 });
+
                 this._settingHeaderPosition = false;
             });
         });
@@ -147,6 +165,7 @@ export default class Style {
         this.setupColumnWidth();
         this.distributeRemainingWidth();
         this.setColumnStyle();
+        this.setFrozenBodyStyle();
         this.setBodyStyle();
     }
 
@@ -158,7 +177,7 @@ export default class Style {
 
     setupMinWidth() {
         $.each('.dt-cell--header', this.header).map(col => {
-            const { colIndex } = $.data(col);
+            const {colIndex} = $.data(col);
             const column = this.getColumn(colIndex);
 
             if (!column.minWidth) {
@@ -173,7 +192,7 @@ export default class Style {
         if (!$('.dt-row')) return;
 
         $.each('.dt-row-header .dt-cell', this.header).map($headerCell => {
-            const { colIndex } = $.data($headerCell);
+            const {colIndex} = $.data($headerCell);
             const column = this.datamanager.getColumn(colIndex);
             let width = $.style($('.dt-cell__content', $headerCell), 'width');
             if (typeof width === 'number' && width >= this.options.minimumColumnWidth) {
@@ -279,7 +298,7 @@ export default class Style {
 
     setColumnStyle() {
         // align columns
-        this.datamanager.getColumns()
+        this.datamanager.getAllColumns()
             .map(column => {
                 // alignment
                 if (!column.align) {
@@ -299,11 +318,67 @@ export default class Style {
     }
 
     refreshColumnWidth() {
-        this.datamanager.getColumns()
+        this.datamanager.getAllColumns()
             .map(column => {
                 this.columnmanager.setColumnHeaderWidth(column.colIndex);
                 this.columnmanager.setColumnWidth(column.colIndex);
             });
+    }
+
+    setFrozenBodyStyle() {
+        const bodyWidth = $.style(this.datatableWrapper, 'width');
+        const firstRow = $('.dt-row', this.frozenBodyScrollable);
+        if (!firstRow) return;
+        const rowWidth = $.style(firstRow, 'width');
+
+        let width = bodyWidth > rowWidth ? rowWidth + 10 : bodyWidth;
+        console.log(rowWidth, bodyWidth, width);
+        $.style(this.frozenBodyScrollable, {
+            width: width + 'px !important'
+        });
+
+        console.log(width);
+
+        // remove the body height, so that it resets to it's original
+        $.removeStyle(this.frozenBodyScrollable, 'height');
+
+        // when there are less rows than the container
+        // adapt the container height
+        let bodyHeight = $.getStyle(this.frozenBodyScrollable, 'height');
+        const scrollHeight = (this.bodyRenderer.hyperlist || {})._scrollHeight || Infinity;
+        const hasHorizontalOverflow = $.hasHorizontalOverflow(this.frozenBodyScrollable);
+
+        let height;
+
+        if (scrollHeight < bodyHeight) {
+            height = scrollHeight;
+
+            // account for scrollbar size when
+            // there is horizontal overflow
+            if (hasHorizontalOverflow) {
+                height += $.scrollbarSize();
+            }
+
+            $.style(this.frozenBodyScrollable, {
+                height: height + 'px'
+            });
+        }
+
+        const verticalOverflow = this.frozenBodyScrollable.scrollHeight - this.frozenBodyScrollable.offsetHeight;
+        if (verticalOverflow < $.scrollbarSize()) {
+            // if verticalOverflow is less than scrollbar size
+            // then most likely scrollbar is causing the scroll
+            // which is not needed
+            $.style(this.frozenBodyScrollable, {
+                overflowY: 'hidden'
+            });
+        }
+
+        if (this.options.layout === 'fluid') {
+            $.style(this.frozenBodyScrollable, {
+                overflowX: 'hidden'
+            });
+        }
     }
 
     setBodyStyle() {

@@ -12,6 +12,7 @@ export default class ColumnManager {
         linkProperties(this, this.instance, [
             'options',
             'fireEvent',
+            'frozenHeader',
             'header',
             'datamanager',
             'cellmanager',
@@ -27,25 +28,42 @@ export default class ColumnManager {
 
     renderHeader() {
         this.header.innerHTML = '<div></div>';
+        this.frozenHeader.innerHTML = '<div></div>';
+        this.refreshHeader(true);
         this.refreshHeader();
     }
 
-    refreshHeader() {
-        const columns = this.datamanager.getColumns();
+    refreshHeader(freeze = false) {
+        if (!freeze) {
+            const columns = this.datamanager.getColumns();
 
-        // refresh html
-        $('div', this.header).innerHTML = this.getHeaderHTML(columns);
+            // refresh html
+            $('div', this.header).innerHTML = this.getHeaderHTML(columns);
 
-        this.$filterRow = $('.dt-row-filter', this.header);
-        if (this.$filterRow) {
-            $.style(this.$filterRow, { display: 'none' });
+            this.$filterRow = $('.dt-row-filter', this.header);
+            if (this.$filterRow) {
+                $.style(this.$filterRow, {display: 'none'});
+            }
+            // reset columnMap
+            this.$columnMap = [];
+            this.bindMoveColumn();
+        } else {
+            const columns = this.datamanager.getColumns(false, freeze);
+            $('div', this.frozenHeader).innerHTML = this.getHeaderHTML(columns, freeze);
+            this.$frozenFilterRow = $('.dt-row-filter', this.frozenHeader);
+            if (this.$frozenFilterRow) {
+                $.style(this.$frozenFilterRow, {display: 'none'});
+            }
+
         }
-        // reset columnMap
-        this.$columnMap = [];
-        this.bindMoveColumn();
     }
 
-    getHeaderHTML(columns) {
+    getHeaderHTML(columns, freeze = false) {
+        if (freeze) {
+            columns = columns.filter(column => column.freeze);
+        } else {
+            columns = columns.filter(column => !column.freeze);
+        }
         let html = this.rowmanager.getRowHTML(columns, {
             isHeader: 1
         });
@@ -95,7 +113,7 @@ export default class ColumnManager {
         $.on(this.$dropdownList, 'click', '.dt-dropdown__list-item', (e, $item) => {
             if (!this._dropdownActiveColIndex) return;
             const dropdownItems = this.options.headerDropdown;
-            const { index } = $.data($item);
+            const {index} = $.data($item);
             const colIndex = this._dropdownActiveColIndex;
             let callback = dropdownItems[index].action;
 
@@ -104,6 +122,7 @@ export default class ColumnManager {
         });
 
         const _this = this;
+
         function deactivateDropdown(e) {
             _this.hideDropdown();
         }
@@ -113,7 +132,7 @@ export default class ColumnManager {
 
     openDropdown(e) {
         if (!this._dropdownWidth) {
-            $.style(this.$dropdownList, { display: '' });
+            $.style(this.$dropdownList, {display: ''});
             this._dropdownWidth = $.style(this.$dropdownList, 'width');
         }
         $.style(this.$dropdownList, {
@@ -122,7 +141,7 @@ export default class ColumnManager {
             top: (e.clientY + 4) + 'px'
         });
         const $cell = $.closest('.dt-cell', e.target);
-        const { colIndex } = $.data($cell);
+        const {colIndex} = $.data($cell);
         this._dropdownActiveColIndex = colIndex;
     }
 
@@ -202,7 +221,7 @@ export default class ColumnManager {
     bindPerfectColumnWidth() {
         $.on(this.header, 'dblclick', '.dt-cell .dt-cell__resize-handle', (e, $handle) => {
             const $cell = $handle.parentNode.parentNode;
-            const { colIndex } = $.data($cell);
+            const {colIndex} = $.data($cell);
 
             let longestCell = this.bodyRenderer.visibleRows
                 .map(d => d[colIndex])
@@ -225,7 +244,7 @@ export default class ColumnManager {
                 .reduce((sum, val) => sum + val);
 
             let width = $.measureTextWidth(cellText) + padding;
-            this.datamanager.updateColumn(colIndex, { width });
+            this.datamanager.updateColumn(colIndex, {width});
             this.setColumnHeaderWidth(colIndex);
             this.setColumnWidth(colIndex);
         });
@@ -314,9 +333,9 @@ export default class ColumnManager {
         }
 
         if (showFilter) {
-            $.style(this.$filterRow, { display: '' });
+            $.style(this.$filterRow, {display: ''});
         } else {
-            $.style(this.$filterRow, { display: 'none' });
+            $.style(this.$filterRow, {display: 'none'});
         }
 
         this.isFilterShown = showFilter;
@@ -340,9 +359,7 @@ export default class ColumnManager {
 
     applyFilter(filters) {
         this.datamanager.filterRows(filters)
-            .then(({
-                rowsToShow
-            }) => {
+            .then(({rowsToShow}) => {
                 this.rowmanager.showRows(rowsToShow);
             });
     }
@@ -376,13 +393,12 @@ export default class ColumnManager {
         return this.datamanager.getColumn(colIndex);
     }
 
-    getColumns() {
-        return this.datamanager.getColumns();
+    getColumns(freeze = false) {
+        return this.datamanager.getColumns(undefined, freeze);
     }
 
     setColumnWidth(colIndex, width) {
         colIndex = +colIndex;
-
         let columnWidth = width || this.getColumn(colIndex).width;
 
         const selector = [
@@ -404,10 +420,12 @@ export default class ColumnManager {
         const {
             width
         } = this.getColumn(colIndex);
-
         let $column = this.$columnMap[colIndex];
         if (!$column) {
             $column = this.header.querySelector(selector);
+            if (!$column) {
+                $column = this.frozenHeader.querySelector(`.dt-cell__content--header-${colIndex}`);
+            }
             this.$columnMap[colIndex] = $column;
         }
 
@@ -432,7 +450,7 @@ export default class ColumnManager {
     }
 
     getDropdownHTML() {
-        const { dropdownButton } = this.options;
+        const {dropdownButton} = this.options;
 
         return `
             <div class="dt-dropdown">
@@ -442,7 +460,7 @@ export default class ColumnManager {
     }
 
     getDropdownListHTML() {
-        const { headerDropdown: dropdownItems } = this.options;
+        const {headerDropdown: dropdownItems} = this.options;
 
         return `
             <div class="dt-dropdown__list">

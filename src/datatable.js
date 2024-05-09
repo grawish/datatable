@@ -109,9 +109,18 @@ class DataTable {
     prepareDom() {
         this.wrapper.innerHTML = `
             <div class="datatable" dir="${this.options.direction}">
-                <div class="dt-header"></div>
-                <div class="dt-scrollable"></div>
-                <div class="dt-footer"></div>
+                <div class="dt-body">
+                <div class="dt-frozen-cols">
+                    <div class="dt-frozen-header"></div>
+                    <div class="dt-frozen-scrollable"></div>
+                    <div class="dt-frozen-footer"></div>
+                </div>
+                <div class="dt-scrollable-cols">
+                    <div class="dt-header"></div>
+                    <div class="dt-scrollable"></div>
+                    <div class="dt-footer"></div>
+                </div>
+                </div>
                 <div class="dt-freeze">
                     <span class="dt-freeze__message">
                         ${this.options.freezeMessage}
@@ -124,6 +133,10 @@ class DataTable {
         `;
 
         this.datatableWrapper = $('.datatable', this.wrapper);
+        this.frozenCols = $('.dt-frozen-cols', this.wrapper);
+        this.frozenHeader = $('.dt-frozen-header', this.wrapper);
+        this.frozenBodyScrollable = $('.dt-frozen-scrollable', this.wrapper);
+        this.frozenFooter = $('.dt-frozen-footer', this.wrapper);
         this.header = $('.dt-header', this.wrapper);
         this.footer = $('.dt-footer', this.wrapper);
         this.bodyScrollable = $('.dt-scrollable', this.wrapper);

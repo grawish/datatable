@@ -7,12 +7,72 @@ export default class BodyRenderer {
         this.datamanager = instance.datamanager;
         this.rowmanager = instance.rowmanager;
         this.cellmanager = instance.cellmanager;
+        this.frozenBodyScrollable = instance.frozenBodyScrollable;
         this.bodyScrollable = instance.bodyScrollable;
         this.footer = this.instance.footer;
         this.log = instance.log;
     }
 
+    renderFrozenRows(rows) {
+        const hiddenColIndices = [];
+        const cols = this.datamanager.getAllColumns();
+        cols.forEach((col, index) => {
+            if (!col.freeze) hiddenColIndices.push(index);
+        });
+        this.visibleRows = rows;
+        this.visibleRowIndices = rows.map(row => row.meta.rowIndex);
+
+        if (rows.length === 0) {
+            this.frozenBodyScrollable.innerHTML = this.getNoDataHTML();
+            return;
+        }
+
+        // Create a temporary set for faster lookups.
+        // We can't change this.visibleRowIndices as it would be breaking for users.
+        let visibleRowIndicesSet = new Set(this.visibleRowIndices);
+        const rowViewOrder = this.datamanager.rowViewOrder.map(index => {
+            if (visibleRowIndicesSet.has(index)) {
+                return index;
+            }
+            return null;
+        }).filter(index => index !== null);
+
+        const computedStyle = getComputedStyle(this.frozenBodyScrollable);
+
+        let config = {
+            // width: computedStyle.width,
+            height: computedStyle.height,
+            itemHeight: this.options.cellHeight,
+            total: rows.length,
+            generate: (index) => {
+                const el = document.createElement('div');
+                const rowIndex = rowViewOrder[index];
+                const row = this.datamanager.getRow(rowIndex);
+                const rowWithoutHiddenCols = row.filter((col, i) => !hiddenColIndices.includes(i));
+                const rowHTML = this.rowmanager.getRowHTML(rowWithoutHiddenCols, row.meta);
+                el.innerHTML = rowHTML;
+                return el.children[0];
+            },
+            afterRender: () => {
+                this.restoreState();
+            }
+        };
+
+        if (!this.hyperlist) {
+            this.hyperlist = new HyperList(this.frozenBodyScrollable, config);
+        } else {
+            this.hyperlist.refresh(this.frozenBodyScrollable, config);
+        }
+
+        this.renderFooter();
+    }
+
     renderRows(rows) {
+        const hiddenColIndices = [];
+        const cols = this.datamanager.getAllColumns();
+        cols.forEach((col, index) => {
+            if (col.freeze) hiddenColIndices.push(index);
+        });
         this.visibleRows = rows;
         this.visibleRowIndices = rows.map(row => row.meta.rowIndex);
 
@@ -33,16 +93,21 @@ export default class BodyRenderer {
 
         const computedStyle = getComputedStyle(this.bodyScrollable);
 
+        console.log(computedStyle);
+
+        const height = this.bodyScrollable.getBoundingClientRect().height;
+
         let config = {
-            width: computedStyle.width,
-            height: computedStyle.height,
+            width: 'auto',
+            height: height,
             itemHeight: this.options.cellHeight,
             total: rows.length,
             generate: (index) => {
                 const el = document.createElement('div');
                 const rowIndex = rowViewOrder[index];
                 const row = this.datamanager.getRow(rowIndex);
-                const rowHTML = this.rowmanager.getRowHTML(row, row.meta);
+                const rowWithoutHiddenCols = row.filter((col, i) => !hiddenColIndices.includes(i));
+                const rowHTML = this.rowmanager.getRowHTML(rowWithoutHiddenCols, row.meta);
                 el.innerHTML = rowHTML;
                 return el.children[0];
             },
@@ -62,6 +127,7 @@ export default class BodyRenderer {
 
     render() {
         const rows = this.datamanager.getRowsForView();
+        this.renderFrozenRows(rows);
         this.renderRows(rows);
         // setDimensions requires atleast 1 row to exist in dom
         this.instance.setDimensions();
@@ -71,7 +137,8 @@ export default class BodyRenderer {
         if (!this.options.showTotalRow) return;
 
         const totalRow = this.getTotalRow();
-        let html = this.rowmanager.getRowHTML(totalRow, { isTotalRow: 1, rowIndex: 'totalRow' });
+        console.log(totalRow);
+        let html = this.rowmanager.getRowHTML(totalRow, {isTotalRow: 1, rowIndex: 'totalRow'});
 
         this.footer.innerHTML = html;
     }

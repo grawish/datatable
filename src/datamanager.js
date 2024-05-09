@@ -72,6 +72,7 @@ export default class DataManager {
                 id: '_rowIndex',
                 content: '',
                 align: 'center',
+                freeze: true,
                 editable: false,
                 resizable: false,
                 focusable: false,
@@ -187,7 +188,6 @@ export default class DataManager {
     prepareTreeRows() {
         this.rows.forEach((row, i) => {
             if (isNumber(row.meta.indent)) {
-                // if (i === 36) debugger;
                 const nextRow = this.getRow(i + 1);
                 row.meta.isLeaf = !nextRow ||
                     notSet(nextRow.meta.indent) ||
@@ -243,6 +243,7 @@ export default class DataManager {
     appendRows(rows) {
         this.validateData(rows);
         this.rows = this.rows.concat(this.prepareRows(rows));
+        console.log('rows', this.rows);
         this.prepareTreeRows();
         this.prepareRowView();
     }
@@ -479,8 +480,24 @@ export default class DataManager {
         return rows.slice(start, end);
     }
 
-    getColumns(skipStandardColumns) {
+    getAllColumns(skipStandardColumns) {
         let columns = this.columns;
+
+        if (skipStandardColumns) {
+            columns = columns.slice(this.getStandardColumnCount());
+        }
+
+        return columns;
+    }
+
+    getColumns(skipStandardColumns, freeze = false) {
+        let columns = this.columns;
+
+        if (!freeze) {
+            columns = columns.filter(column => !column.freeze);
+        } else {
+            columns = columns.filter(column => column.freeze);
+        }
 
         if (skipStandardColumns) {
             columns = columns.slice(this.getStandardColumnCount());
@@ -518,7 +535,6 @@ export default class DataManager {
             // negative indexes
             colIndex = this.columns.length + colIndex;
         }
-
         return this.columns.find(col => col.colIndex === colIndex);
     }
 
@@ -620,4 +636,5 @@ export default class DataManager {
 }
 
 // Custom Errors
-export class DataError extends TypeError {};
+export class DataError extends TypeError {
+};

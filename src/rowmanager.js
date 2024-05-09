@@ -348,7 +348,6 @@ export default class RowManager {
         if (props.isHeader) {
             rowIdentifier = 'header';
         }
-
         return `
             <div class="dt-row dt-row-${rowIdentifier}" ${dataAttr}>
                 ${row.map(cell => this.cellmanager.getCellHTML(cell)).join('')}
