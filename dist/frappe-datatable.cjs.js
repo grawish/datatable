@@ -1999,7 +1999,8 @@ class DataManager {
                 editable: false,
                 resizable: false,
                 focusable: false,
-                dropdown: false
+                dropdown: false,
+                width: 50
             };
 
             this.columns.push(cell);

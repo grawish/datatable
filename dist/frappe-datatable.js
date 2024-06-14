@@ -447,6 +447,13 @@ var DataTable = (function (Sortable) {
 
     var isObjectLike_1 = isObjectLike;
 
+    var isObjectLike$1 = /*#__PURE__*/Object.freeze({
+        default: isObjectLike_1,
+        __moduleExports: isObjectLike_1
+    });
+
+    var isObjectLike$2 = ( isObjectLike$1 && isObjectLike_1 ) || isObjectLike$1;
+
     /** `Object#toString` result references. */
     var symbolTag = '[object Symbol]';
 
@@ -469,7 +476,7 @@ var DataTable = (function (Sortable) {
      */
     function isSymbol(value) {
       return typeof value == 'symbol' ||
-        (isObjectLike_1(value) && _baseGetTag(value) == symbolTag);
+        (isObjectLike$2(value) && _baseGetTag(value) == symbolTag);
     }
 
     var isSymbol_1 = isSymbol;
@@ -832,16 +839,9 @@ var DataTable = (function (Sortable) {
 
     var _coreJsData = coreJsData;
 
-    var _coreJsData$1 = /*#__PURE__*/Object.freeze({
-        default: _coreJsData,
-        __moduleExports: _coreJsData
-    });
-
-    var coreJsData$1 = ( _coreJsData$1 && _coreJsData ) || _coreJsData$1;
-
     /** Used to detect methods masquerading as native. */
     var maskSrcKey = (function() {
-      var uid = /[^.]+$/.exec(coreJsData$1 && coreJsData$1.keys && coreJsData$1.keys.IE_PROTO || '');
+      var uid = /[^.]+$/.exec(_coreJsData && _coreJsData.keys && _coreJsData.keys.IE_PROTO || '');
       return uid ? ('Symbol(src)_1.' + uid) : '';
     }());
 
@@ -857,6 +857,11 @@ var DataTable = (function (Sortable) {
     }
 
     var _isMasked = isMasked;
+
+    var _isMasked$1 = /*#__PURE__*/Object.freeze({
+        default: _isMasked,
+        __moduleExports: _isMasked
+    });
 
     /** Used for built-in method references. */
     var funcProto = Function.prototype;
@@ -884,6 +889,8 @@ var DataTable = (function (Sortable) {
     }
 
     var _toSource = toSource;
+
+    var isMasked$1 = ( _isMasked$1 && _isMasked ) || _isMasked$1;
 
     /**
      * Used to match `RegExp`
@@ -919,7 +926,7 @@ var DataTable = (function (Sortable) {
      *  else `false`.
      */
     function baseIsNative(value) {
-      if (!isObject_1(value) || _isMasked(value)) {
+      if (!isObject_1(value) || isMasked$1(value)) {
         return false;
       }
       var pattern = isFunction_1(value) ? reIsNative : reIsHostCtor;
@@ -942,6 +949,13 @@ var DataTable = (function (Sortable) {
 
     var _getValue = getValue;
 
+    var _getValue$1 = /*#__PURE__*/Object.freeze({
+        default: _getValue,
+        __moduleExports: _getValue
+    });
+
+    var getValue$1 = ( _getValue$1 && _getValue ) || _getValue$1;
+
     /**
      * Gets the native function at `key` of `object`.
      *
@@ -951,7 +965,7 @@ var DataTable = (function (Sortable) {
      * @returns {*} Returns the function if it's native, else `undefined`.
      */
     function getNative(object, key) {
-      var value = _getValue(object, key);
+      var value = getValue$1(object, key);
       return _baseIsNative(value) ? value : undefined;
     }
 
@@ -1166,6 +1180,13 @@ var DataTable = (function (Sortable) {
 
     var _assocIndexOf = assocIndexOf;
 
+    var _assocIndexOf$1 = /*#__PURE__*/Object.freeze({
+        default: _assocIndexOf,
+        __moduleExports: _assocIndexOf
+    });
+
+    var assocIndexOf$1 = ( _assocIndexOf$1 && _assocIndexOf ) || _assocIndexOf$1;
+
     /** Used for built-in method references. */
     var arrayProto = Array.prototype;
 
@@ -1183,7 +1204,7 @@ var DataTable = (function (Sortable) {
      */
     function listCacheDelete(key) {
       var data = this.__data__,
-          index = _assocIndexOf(data, key);
+          index = assocIndexOf$1(data, key);
 
       if (index < 0) {
         return false;
@@ -1211,7 +1232,7 @@ var DataTable = (function (Sortable) {
      */
     function listCacheGet(key) {
       var data = this.__data__,
-          index = _assocIndexOf(data, key);
+          index = assocIndexOf$1(data, key);
 
       return index < 0 ? undefined : data[index][1];
     }
@@ -1228,7 +1249,7 @@ var DataTable = (function (Sortable) {
      * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
      */
     function listCacheHas(key) {
-      return _assocIndexOf(this.__data__, key) > -1;
+      return assocIndexOf$1(this.__data__, key) > -1;
     }
 
     var _listCacheHas = listCacheHas;
@@ -1245,7 +1266,7 @@ var DataTable = (function (Sortable) {
      */
     function listCacheSet(key, value) {
       var data = this.__data__,
-          index = _assocIndexOf(data, key);
+          index = assocIndexOf$1(data, key);
 
       if (index < 0) {
         ++this.size;
@@ -1574,6 +1595,13 @@ var DataTable = (function (Sortable) {
 
     var _baseIndexOf = baseIndexOf;
 
+    var _baseIndexOf$1 = /*#__PURE__*/Object.freeze({
+        default: _baseIndexOf,
+        __moduleExports: _baseIndexOf
+    });
+
+    var baseIndexOf$1 = ( _baseIndexOf$1 && _baseIndexOf ) || _baseIndexOf$1;
+
     /**
      * A specialized version of `_.includes` for arrays without support for
      * specifying an index to search from.
@@ -1585,7 +1613,7 @@ var DataTable = (function (Sortable) {
      */
     function arrayIncludes(array, value) {
       var length = array == null ? 0 : array.length;
-      return !!length && _baseIndexOf(array, value, 0) > -1;
+      return !!length && baseIndexOf$1(array, value, 0) > -1;
     }
 
     var _arrayIncludes = arrayIncludes;
@@ -1751,6 +1779,13 @@ var DataTable = (function (Sortable) {
 
     var _baseUniq = baseUniq;
 
+    var _baseUniq$1 = /*#__PURE__*/Object.freeze({
+        default: _baseUniq,
+        __moduleExports: _baseUniq
+    });
+
+    var baseUniq$1 = ( _baseUniq$1 && _baseUniq ) || _baseUniq$1;
+
     /**
      * Creates a duplicate-free version of an array, using
      * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
@@ -1770,7 +1805,7 @@ var DataTable = (function (Sortable) {
      * // => [2, 1]
      */
     function uniq(array) {
-      return (array && array.length) ? _baseUniq(array) : [];
+      return (array && array.length) ? baseUniq$1(array) : [];
     }
 
     var uniq_1 = uniq;
@@ -2005,7 +2040,8 @@ var DataTable = (function (Sortable) {
                     editable: false,
                     resizable: false,
                     focusable: false,
-                    dropdown: false
+                    dropdown: false,
+                    width: 50
                 };
 
                 this.columns.push(cell);
