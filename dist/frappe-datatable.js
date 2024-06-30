@@ -271,6 +271,11 @@ var DataTable = (function (Sortable) {
 
     var isObject_1 = isObject;
 
+    var isObject$1 = /*#__PURE__*/Object.freeze({
+        default: isObject_1,
+        __moduleExports: isObject_1
+    });
+
     var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
     function commonjsRequire () {
@@ -447,13 +452,6 @@ var DataTable = (function (Sortable) {
 
     var isObjectLike_1 = isObjectLike;
 
-    var isObjectLike$1 = /*#__PURE__*/Object.freeze({
-        default: isObjectLike_1,
-        __moduleExports: isObjectLike_1
-    });
-
-    var isObjectLike$2 = ( isObjectLike$1 && isObjectLike_1 ) || isObjectLike$1;
-
     /** `Object#toString` result references. */
     var symbolTag = '[object Symbol]';
 
@@ -476,10 +474,12 @@ var DataTable = (function (Sortable) {
      */
     function isSymbol(value) {
       return typeof value == 'symbol' ||
-        (isObjectLike$2(value) && _baseGetTag(value) == symbolTag);
+        (isObjectLike_1(value) && _baseGetTag(value) == symbolTag);
     }
 
     var isSymbol_1 = isSymbol;
+
+    var isObject$2 = ( isObject$1 && isObject_1 ) || isObject$1;
 
     /** Used as references for various `Number` constants. */
     var NAN = 0 / 0;
@@ -529,9 +529,9 @@ var DataTable = (function (Sortable) {
       if (isSymbol_1(value)) {
         return NAN;
       }
-      if (isObject_1(value)) {
+      if (isObject$2(value)) {
         var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
-        value = isObject_1(other) ? (other + '') : other;
+        value = isObject$2(other) ? (other + '') : other;
       }
       if (typeof value != 'string') {
         return value === 0 ? value : +value;
@@ -622,7 +622,7 @@ var DataTable = (function (Sortable) {
         throw new TypeError(FUNC_ERROR_TEXT);
       }
       wait = toNumber_1(wait) || 0;
-      if (isObject_1(options)) {
+      if (isObject$2(options)) {
         leading = !!options.leading;
         maxing = 'maxWait' in options;
         maxWait = maxing ? nativeMax(toNumber_1(options.maxWait) || 0, wait) : maxWait;
@@ -786,7 +786,7 @@ var DataTable = (function (Sortable) {
       if (typeof func != 'function') {
         throw new TypeError(FUNC_ERROR_TEXT$1);
       }
-      if (isObject_1(options)) {
+      if (isObject$2(options)) {
         leading = 'leading' in options ? !!options.leading : leading;
         trailing = 'trailing' in options ? !!options.trailing : trailing;
       }
@@ -823,7 +823,7 @@ var DataTable = (function (Sortable) {
      * // => false
      */
     function isFunction(value) {
-      if (!isObject_1(value)) {
+      if (!isObject$2(value)) {
         return false;
       }
       // The use of `Object#toString` avoids issues with the `typeof` operator
@@ -858,11 +858,6 @@ var DataTable = (function (Sortable) {
 
     var _isMasked = isMasked;
 
-    var _isMasked$1 = /*#__PURE__*/Object.freeze({
-        default: _isMasked,
-        __moduleExports: _isMasked
-    });
-
     /** Used for built-in method references. */
     var funcProto = Function.prototype;
 
@@ -889,8 +884,6 @@ var DataTable = (function (Sortable) {
     }
 
     var _toSource = toSource;
-
-    var isMasked$1 = ( _isMasked$1 && _isMasked ) || _isMasked$1;
 
     /**
      * Used to match `RegExp`
@@ -926,7 +919,7 @@ var DataTable = (function (Sortable) {
      *  else `false`.
      */
     function baseIsNative(value) {
-      if (!isObject_1(value) || isMasked$1(value)) {
+      if (!isObject$2(value) || _isMasked(value)) {
         return false;
       }
       var pattern = isFunction_1(value) ? reIsNative : reIsHostCtor;
@@ -949,13 +942,6 @@ var DataTable = (function (Sortable) {
 
     var _getValue = getValue;
 
-    var _getValue$1 = /*#__PURE__*/Object.freeze({
-        default: _getValue,
-        __moduleExports: _getValue
-    });
-
-    var getValue$1 = ( _getValue$1 && _getValue ) || _getValue$1;
-
     /**
      * Gets the native function at `key` of `object`.
      *
@@ -965,7 +951,7 @@ var DataTable = (function (Sortable) {
      * @returns {*} Returns the function if it's native, else `undefined`.
      */
     function getNative(object, key) {
-      var value = getValue$1(object, key);
+      var value = _getValue(object, key);
       return _baseIsNative(value) ? value : undefined;
     }
 
@@ -1345,6 +1331,13 @@ var DataTable = (function (Sortable) {
 
     var _isKeyable = isKeyable;
 
+    var _isKeyable$1 = /*#__PURE__*/Object.freeze({
+        default: _isKeyable,
+        __moduleExports: _isKeyable
+    });
+
+    var isKeyable$1 = ( _isKeyable$1 && _isKeyable ) || _isKeyable$1;
+
     /**
      * Gets the data for `map`.
      *
@@ -1355,12 +1348,19 @@ var DataTable = (function (Sortable) {
      */
     function getMapData(map, key) {
       var data = map.__data__;
-      return _isKeyable(key)
+      return isKeyable$1(key)
         ? data[typeof key == 'string' ? 'string' : 'hash']
         : data.map;
     }
 
     var _getMapData = getMapData;
+
+    var _getMapData$1 = /*#__PURE__*/Object.freeze({
+        default: _getMapData,
+        __moduleExports: _getMapData
+    });
+
+    var getMapData$1 = ( _getMapData$1 && _getMapData ) || _getMapData$1;
 
     /**
      * Removes `key` and its value from the map.
@@ -1372,7 +1372,7 @@ var DataTable = (function (Sortable) {
      * @returns {boolean} Returns `true` if the entry was removed, else `false`.
      */
     function mapCacheDelete(key) {
-      var result = _getMapData(this, key)['delete'](key);
+      var result = getMapData$1(this, key)['delete'](key);
       this.size -= result ? 1 : 0;
       return result;
     }
@@ -1389,7 +1389,7 @@ var DataTable = (function (Sortable) {
      * @returns {*} Returns the entry value.
      */
     function mapCacheGet(key) {
-      return _getMapData(this, key).get(key);
+      return getMapData$1(this, key).get(key);
     }
 
     var _mapCacheGet = mapCacheGet;
@@ -1404,7 +1404,7 @@ var DataTable = (function (Sortable) {
      * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
      */
     function mapCacheHas(key) {
-      return _getMapData(this, key).has(key);
+      return getMapData$1(this, key).has(key);
     }
 
     var _mapCacheHas = mapCacheHas;
@@ -1420,7 +1420,7 @@ var DataTable = (function (Sortable) {
      * @returns {Object} Returns the map cache instance.
      */
     function mapCacheSet(key, value) {
-      var data = _getMapData(this, key),
+      var data = getMapData$1(this, key),
           size = data.size;
 
       data.set(key, value);
@@ -1595,13 +1595,6 @@ var DataTable = (function (Sortable) {
 
     var _baseIndexOf = baseIndexOf;
 
-    var _baseIndexOf$1 = /*#__PURE__*/Object.freeze({
-        default: _baseIndexOf,
-        __moduleExports: _baseIndexOf
-    });
-
-    var baseIndexOf$1 = ( _baseIndexOf$1 && _baseIndexOf ) || _baseIndexOf$1;
-
     /**
      * A specialized version of `_.includes` for arrays without support for
      * specifying an index to search from.
@@ -1613,7 +1606,7 @@ var DataTable = (function (Sortable) {
      */
     function arrayIncludes(array, value) {
       var length = array == null ? 0 : array.length;
-      return !!length && baseIndexOf$1(array, value, 0) > -1;
+      return !!length && _baseIndexOf(array, value, 0) > -1;
     }
 
     var _arrayIncludes = arrayIncludes;
@@ -1779,13 +1772,6 @@ var DataTable = (function (Sortable) {
 
     var _baseUniq = baseUniq;
 
-    var _baseUniq$1 = /*#__PURE__*/Object.freeze({
-        default: _baseUniq,
-        __moduleExports: _baseUniq
-    });
-
-    var baseUniq$1 = ( _baseUniq$1 && _baseUniq ) || _baseUniq$1;
-
     /**
      * Creates a duplicate-free version of an array, using
      * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
@@ -1805,7 +1791,7 @@ var DataTable = (function (Sortable) {
      * // => [2, 1]
      */
     function uniq(array) {
-      return (array && array.length) ? baseUniq$1(array) : [];
+      return (array && array.length) ? _baseUniq(array) : [];
     }
 
     var uniq_1 = uniq;
@@ -5031,15 +5017,13 @@ var DataTable = (function (Sortable) {
             $.on(this.bodyScrollable, 'scroll', (e) => {
 
                 requestAnimationFrame(() => {
-                    const top = e.target.scrollTop;
-                    this.frozenBodyScrollable.scrollTo(0, top);
+                    this.frozenBodyScrollable.scrollTop = e.target.scrollTop;
                 });
             });
             $.on(this.frozenBodyScrollable, 'scroll', (e) => {
 
                 requestAnimationFrame(() => {
-                    const top = e.target.scrollTop;
-                    this.bodyScrollable.scrollTo(0, top);
+                    this.bodyScrollable.scrollTop = e.target.scrollTop;
                 });
             });
         }

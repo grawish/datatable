@@ -1,9 +1,5 @@
 import $ from './dom';
-import {
-    camelCaseToDash,
-    linkProperties,
-    throttle
-} from './utils';
+import {camelCaseToDash, linkProperties, throttle} from './utils';
 
 export default class Style {
     constructor(instance) {
@@ -44,15 +40,13 @@ export default class Style {
         $.on(this.bodyScrollable, 'scroll', (e) => {
 
             requestAnimationFrame(() => {
-                const top = e.target.scrollTop;
-                this.frozenBodyScrollable.scrollTo(0, top);
+                this.frozenBodyScrollable.scrollTop = e.target.scrollTop;
             });
         });
         $.on(this.frozenBodyScrollable, 'scroll', (e) => {
 
             requestAnimationFrame(() => {
-                const top = e.target.scrollTop;
-                this.bodyScrollable.scrollTo(0, top);
+                this.bodyScrollable.scrollTop = e.target.scrollTop;
             });
         });
     }
