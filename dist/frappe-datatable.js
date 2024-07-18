@@ -271,11 +271,6 @@ var DataTable = (function (Sortable) {
 
     var isObject_1 = isObject;
 
-    var isObject$1 = /*#__PURE__*/Object.freeze({
-        default: isObject_1,
-        __moduleExports: isObject_1
-    });
-
     var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
     function commonjsRequire () {
@@ -479,8 +474,6 @@ var DataTable = (function (Sortable) {
 
     var isSymbol_1 = isSymbol;
 
-    var isObject$2 = ( isObject$1 && isObject_1 ) || isObject$1;
-
     /** Used as references for various `Number` constants. */
     var NAN = 0 / 0;
 
@@ -529,9 +522,9 @@ var DataTable = (function (Sortable) {
       if (isSymbol_1(value)) {
         return NAN;
       }
-      if (isObject$2(value)) {
+      if (isObject_1(value)) {
         var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
-        value = isObject$2(other) ? (other + '') : other;
+        value = isObject_1(other) ? (other + '') : other;
       }
       if (typeof value != 'string') {
         return value === 0 ? value : +value;
@@ -622,7 +615,7 @@ var DataTable = (function (Sortable) {
         throw new TypeError(FUNC_ERROR_TEXT);
       }
       wait = toNumber_1(wait) || 0;
-      if (isObject$2(options)) {
+      if (isObject_1(options)) {
         leading = !!options.leading;
         maxing = 'maxWait' in options;
         maxWait = maxing ? nativeMax(toNumber_1(options.maxWait) || 0, wait) : maxWait;
@@ -786,7 +779,7 @@ var DataTable = (function (Sortable) {
       if (typeof func != 'function') {
         throw new TypeError(FUNC_ERROR_TEXT$1);
       }
-      if (isObject$2(options)) {
+      if (isObject_1(options)) {
         leading = 'leading' in options ? !!options.leading : leading;
         trailing = 'trailing' in options ? !!options.trailing : trailing;
       }
@@ -823,7 +816,7 @@ var DataTable = (function (Sortable) {
      * // => false
      */
     function isFunction(value) {
-      if (!isObject$2(value)) {
+      if (!isObject_1(value)) {
         return false;
       }
       // The use of `Object#toString` avoids issues with the `typeof` operator
@@ -833,6 +826,11 @@ var DataTable = (function (Sortable) {
     }
 
     var isFunction_1 = isFunction;
+
+    var isFunction$1 = /*#__PURE__*/Object.freeze({
+        default: isFunction_1,
+        __moduleExports: isFunction_1
+    });
 
     /** Used to detect overreaching core-js shims. */
     var coreJsData = _root['__core-js_shared__'];
@@ -885,6 +883,8 @@ var DataTable = (function (Sortable) {
 
     var _toSource = toSource;
 
+    var isFunction$2 = ( isFunction$1 && isFunction_1 ) || isFunction$1;
+
     /**
      * Used to match `RegExp`
      * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
@@ -919,10 +919,10 @@ var DataTable = (function (Sortable) {
      *  else `false`.
      */
     function baseIsNative(value) {
-      if (!isObject$2(value) || _isMasked(value)) {
+      if (!isObject_1(value) || _isMasked(value)) {
         return false;
       }
-      var pattern = isFunction_1(value) ? reIsNative : reIsHostCtor;
+      var pattern = isFunction$2(value) ? reIsNative : reIsHostCtor;
       return pattern.test(_toSource(value));
     }
 
@@ -1094,6 +1094,11 @@ var DataTable = (function (Sortable) {
 
     var _Hash = Hash;
 
+    var _Hash$1 = /*#__PURE__*/Object.freeze({
+        default: _Hash,
+        __moduleExports: _Hash
+    });
+
     /**
      * Removes all key-value entries from the list cache.
      *
@@ -1166,13 +1171,6 @@ var DataTable = (function (Sortable) {
 
     var _assocIndexOf = assocIndexOf;
 
-    var _assocIndexOf$1 = /*#__PURE__*/Object.freeze({
-        default: _assocIndexOf,
-        __moduleExports: _assocIndexOf
-    });
-
-    var assocIndexOf$1 = ( _assocIndexOf$1 && _assocIndexOf ) || _assocIndexOf$1;
-
     /** Used for built-in method references. */
     var arrayProto = Array.prototype;
 
@@ -1190,7 +1188,7 @@ var DataTable = (function (Sortable) {
      */
     function listCacheDelete(key) {
       var data = this.__data__,
-          index = assocIndexOf$1(data, key);
+          index = _assocIndexOf(data, key);
 
       if (index < 0) {
         return false;
@@ -1218,7 +1216,7 @@ var DataTable = (function (Sortable) {
      */
     function listCacheGet(key) {
       var data = this.__data__,
-          index = assocIndexOf$1(data, key);
+          index = _assocIndexOf(data, key);
 
       return index < 0 ? undefined : data[index][1];
     }
@@ -1235,7 +1233,7 @@ var DataTable = (function (Sortable) {
      * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
      */
     function listCacheHas(key) {
-      return assocIndexOf$1(this.__data__, key) > -1;
+      return _assocIndexOf(this.__data__, key) > -1;
     }
 
     var _listCacheHas = listCacheHas;
@@ -1252,7 +1250,7 @@ var DataTable = (function (Sortable) {
      */
     function listCacheSet(key, value) {
       var data = this.__data__,
-          index = assocIndexOf$1(data, key);
+          index = _assocIndexOf(data, key);
 
       if (index < 0) {
         ++this.size;
@@ -1297,6 +1295,8 @@ var DataTable = (function (Sortable) {
 
     var _Map = Map;
 
+    var Hash$1 = ( _Hash$1 && _Hash ) || _Hash$1;
+
     /**
      * Removes all key-value entries from the map.
      *
@@ -1307,9 +1307,9 @@ var DataTable = (function (Sortable) {
     function mapCacheClear() {
       this.size = 0;
       this.__data__ = {
-        'hash': new _Hash,
+        'hash': new Hash$1,
         'map': new (_Map || _ListCache),
-        'string': new _Hash
+        'string': new Hash$1
       };
     }
 
@@ -1355,13 +1355,6 @@ var DataTable = (function (Sortable) {
 
     var _getMapData = getMapData;
 
-    var _getMapData$1 = /*#__PURE__*/Object.freeze({
-        default: _getMapData,
-        __moduleExports: _getMapData
-    });
-
-    var getMapData$1 = ( _getMapData$1 && _getMapData ) || _getMapData$1;
-
     /**
      * Removes `key` and its value from the map.
      *
@@ -1372,7 +1365,7 @@ var DataTable = (function (Sortable) {
      * @returns {boolean} Returns `true` if the entry was removed, else `false`.
      */
     function mapCacheDelete(key) {
-      var result = getMapData$1(this, key)['delete'](key);
+      var result = _getMapData(this, key)['delete'](key);
       this.size -= result ? 1 : 0;
       return result;
     }
@@ -1389,7 +1382,7 @@ var DataTable = (function (Sortable) {
      * @returns {*} Returns the entry value.
      */
     function mapCacheGet(key) {
-      return getMapData$1(this, key).get(key);
+      return _getMapData(this, key).get(key);
     }
 
     var _mapCacheGet = mapCacheGet;
@@ -1404,7 +1397,7 @@ var DataTable = (function (Sortable) {
      * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
      */
     function mapCacheHas(key) {
-      return getMapData$1(this, key).has(key);
+      return _getMapData(this, key).has(key);
     }
 
     var _mapCacheHas = mapCacheHas;
@@ -1420,7 +1413,7 @@ var DataTable = (function (Sortable) {
      * @returns {Object} Returns the map cache instance.
      */
     function mapCacheSet(key, value) {
-      var data = getMapData$1(this, key),
+      var data = _getMapData(this, key),
           size = data.size;
 
       data.set(key, value);
@@ -1554,6 +1547,11 @@ var DataTable = (function (Sortable) {
 
     var _baseIsNaN = baseIsNaN;
 
+    var _baseIsNaN$1 = /*#__PURE__*/Object.freeze({
+        default: _baseIsNaN,
+        __moduleExports: _baseIsNaN
+    });
+
     /**
      * A specialized version of `_.indexOf` which performs strict equality
      * comparisons of values, i.e. `===`.
@@ -1578,6 +1576,8 @@ var DataTable = (function (Sortable) {
 
     var _strictIndexOf = strictIndexOf;
 
+    var baseIsNaN$1 = ( _baseIsNaN$1 && _baseIsNaN ) || _baseIsNaN$1;
+
     /**
      * The base implementation of `_.indexOf` without `fromIndex` bounds checks.
      *
@@ -1590,7 +1590,7 @@ var DataTable = (function (Sortable) {
     function baseIndexOf(array, value, fromIndex) {
       return value === value
         ? _strictIndexOf(array, value, fromIndex)
-        : _baseFindIndex(array, _baseIsNaN, fromIndex);
+        : _baseFindIndex(array, baseIsNaN$1, fromIndex);
     }
 
     var _baseIndexOf = baseIndexOf;
