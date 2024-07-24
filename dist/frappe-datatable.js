@@ -827,11 +827,6 @@ var DataTable = (function (Sortable) {
 
     var isFunction_1 = isFunction;
 
-    var isFunction$1 = /*#__PURE__*/Object.freeze({
-        default: isFunction_1,
-        __moduleExports: isFunction_1
-    });
-
     /** Used to detect overreaching core-js shims. */
     var coreJsData = _root['__core-js_shared__'];
 
@@ -883,8 +878,6 @@ var DataTable = (function (Sortable) {
 
     var _toSource = toSource;
 
-    var isFunction$2 = ( isFunction$1 && isFunction_1 ) || isFunction$1;
-
     /**
      * Used to match `RegExp`
      * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
@@ -922,7 +915,7 @@ var DataTable = (function (Sortable) {
       if (!isObject_1(value) || _isMasked(value)) {
         return false;
       }
-      var pattern = isFunction$2(value) ? reIsNative : reIsHostCtor;
+      var pattern = isFunction_1(value) ? reIsNative : reIsHostCtor;
       return pattern.test(_toSource(value));
     }
 
@@ -1093,11 +1086,6 @@ var DataTable = (function (Sortable) {
     Hash.prototype.set = _hashSet;
 
     var _Hash = Hash;
-
-    var _Hash$1 = /*#__PURE__*/Object.freeze({
-        default: _Hash,
-        __moduleExports: _Hash
-    });
 
     /**
      * Removes all key-value entries from the list cache.
@@ -1295,8 +1283,6 @@ var DataTable = (function (Sortable) {
 
     var _Map = Map;
 
-    var Hash$1 = ( _Hash$1 && _Hash ) || _Hash$1;
-
     /**
      * Removes all key-value entries from the map.
      *
@@ -1307,9 +1293,9 @@ var DataTable = (function (Sortable) {
     function mapCacheClear() {
       this.size = 0;
       this.__data__ = {
-        'hash': new Hash$1,
+        'hash': new _Hash,
         'map': new (_Map || _ListCache),
-        'string': new Hash$1
+        'string': new _Hash
       };
     }
 
@@ -1331,13 +1317,6 @@ var DataTable = (function (Sortable) {
 
     var _isKeyable = isKeyable;
 
-    var _isKeyable$1 = /*#__PURE__*/Object.freeze({
-        default: _isKeyable,
-        __moduleExports: _isKeyable
-    });
-
-    var isKeyable$1 = ( _isKeyable$1 && _isKeyable ) || _isKeyable$1;
-
     /**
      * Gets the data for `map`.
      *
@@ -1348,7 +1327,7 @@ var DataTable = (function (Sortable) {
      */
     function getMapData(map, key) {
       var data = map.__data__;
-      return isKeyable$1(key)
+      return _isKeyable(key)
         ? data[typeof key == 'string' ? 'string' : 'hash']
         : data.map;
     }
@@ -1547,11 +1526,6 @@ var DataTable = (function (Sortable) {
 
     var _baseIsNaN = baseIsNaN;
 
-    var _baseIsNaN$1 = /*#__PURE__*/Object.freeze({
-        default: _baseIsNaN,
-        __moduleExports: _baseIsNaN
-    });
-
     /**
      * A specialized version of `_.indexOf` which performs strict equality
      * comparisons of values, i.e. `===`.
@@ -1576,8 +1550,6 @@ var DataTable = (function (Sortable) {
 
     var _strictIndexOf = strictIndexOf;
 
-    var baseIsNaN$1 = ( _baseIsNaN$1 && _baseIsNaN ) || _baseIsNaN$1;
-
     /**
      * The base implementation of `_.indexOf` without `fromIndex` bounds checks.
      *
@@ -1590,7 +1562,7 @@ var DataTable = (function (Sortable) {
     function baseIndexOf(array, value, fromIndex) {
       return value === value
         ? _strictIndexOf(array, value, fromIndex)
-        : _baseFindIndex(array, baseIsNaN$1, fromIndex);
+        : _baseFindIndex(array, _baseIsNaN, fromIndex);
     }
 
     var _baseIndexOf = baseIndexOf;
@@ -4801,14 +4773,10 @@ var DataTable = (function (Sortable) {
                 return null;
             }).filter(index => index !== null);
 
-            const computedStyle = getComputedStyle(this.frozenBodyScrollable);
-
-            let config = {
-                // width: computedStyle.width,
-                height: computedStyle.height,
-                itemHeight: this.options.cellHeight,
-                total: rows.length,
-                generate: (index) => {
+            // const height = this.frozenBodyScrollable.getBoundingClientRect().height;
+            // console.log(rows);
+            for (let i in rows) {
+                this.frozenBodyScrollable.appendChild(((index) => {
                     const el = document.createElement('div');
                     const rowIndex = rowViewOrder[index];
                     const row = this.datamanager.getRow(rowIndex);
@@ -4816,17 +4784,32 @@ var DataTable = (function (Sortable) {
                     const rowHTML = this.rowmanager.getRowHTML(rowWithoutHiddenCols, row.meta);
                     el.innerHTML = rowHTML;
                     return el.children[0];
-                },
-                afterRender: () => {
-                    this.restoreState();
-                }
-            };
-
-            if (!this.hyperlist) {
-                this.hyperlist = new HyperList(this.frozenBodyScrollable, config);
-            } else {
-                this.hyperlist.refresh(this.frozenBodyScrollable, config);
+                })(i));
             }
+            // let config = {
+            //     width: 'auto',
+            //     height: height,
+            //     itemHeight: this.options.cellHeight,
+            //     total: rows.length,
+            //     generate: (index) => {
+            //         const el = document.createElement('div');
+            //         const rowIndex = rowViewOrder[index];
+            //         const row = this.datamanager.getRow(rowIndex);
+            //         const rowWithoutHiddenCols = row.filter((col, i) => !hiddenColIndices.includes(i));
+            //         const rowHTML = this.rowmanager.getRowHTML(rowWithoutHiddenCols, row.meta);
+            //         el.innerHTML = rowHTML;
+            //         return el.children[0];
+            //     },
+            //     afterRender: () => {
+            //         this.restoreState();
+            //     }
+            // };
+            //
+            // if (!this.hyperlist) {
+            //     this.hyperlist = new HyperList(this.frozenBodyScrollable, config);
+            // } else {
+            //     this.hyperlist.refresh(this.frozenBodyScrollable, config);
+            // }
 
             this.renderFooter();
         }
@@ -4855,16 +4838,16 @@ var DataTable = (function (Sortable) {
                 return null;
             }).filter(index => index !== null);
 
-            const computedStyle = getComputedStyle(this.bodyScrollable);
+            // const computedStyle = getComputedStyle(this.bodyScrollable);
 
-            console.log(computedStyle);
+            // console.log(computedStyle);
 
             const height = this.bodyScrollable.getBoundingClientRect().height;
 
             let config = {
                 width: 'auto',
                 height: height,
-                itemHeight: this.options.cellHeight,
+                itemHeight: this.options.cellHeight + 2,
                 total: rows.length,
                 generate: (index) => {
                     const el = document.createElement('div');
@@ -4901,7 +4884,6 @@ var DataTable = (function (Sortable) {
             if (!this.options.showTotalRow) return;
 
             const totalRow = this.getTotalRow();
-            console.log(totalRow);
             let html = this.rowmanager.getRowHTML(totalRow, {isTotalRow: 1, rowIndex: 'totalRow'});
 
             this.footer.innerHTML = html;
@@ -5303,12 +5285,9 @@ var DataTable = (function (Sortable) {
             const rowWidth = $.style(firstRow, 'width');
 
             let width = bodyWidth > rowWidth ? rowWidth + 10 : bodyWidth;
-            console.log(rowWidth, bodyWidth, width);
             $.style(this.frozenBodyScrollable, {
                 width: width + 'px !important'
             });
-
-            console.log(width);
 
             // remove the body height, so that it resets to it's original
             $.removeStyle(this.frozenBodyScrollable, 'height');

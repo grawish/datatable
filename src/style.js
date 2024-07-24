@@ -326,12 +326,9 @@ export default class Style {
         const rowWidth = $.style(firstRow, 'width');
 
         let width = bodyWidth > rowWidth ? rowWidth + 10 : bodyWidth;
-        console.log(rowWidth, bodyWidth, width);
         $.style(this.frozenBodyScrollable, {
             width: width + 'px !important'
         });
-
-        console.log(width);
 
         // remove the body height, so that it resets to it's original
         $.removeStyle(this.frozenBodyScrollable, 'height');

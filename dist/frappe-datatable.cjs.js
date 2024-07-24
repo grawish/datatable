@@ -4774,14 +4774,10 @@ class BodyRenderer {
             return null;
         }).filter(index => index !== null);
 
-        const computedStyle = getComputedStyle(this.frozenBodyScrollable);
-
-        let config = {
-            // width: computedStyle.width,
-            height: computedStyle.height,
-            itemHeight: this.options.cellHeight,
-            total: rows.length,
-            generate: (index) => {
+        // const height = this.frozenBodyScrollable.getBoundingClientRect().height;
+        // console.log(rows);
+        for (let i in rows) {
+            this.frozenBodyScrollable.appendChild(((index) => {
                 const el = document.createElement('div');
                 const rowIndex = rowViewOrder[index];
                 const row = this.datamanager.getRow(rowIndex);
@@ -4789,17 +4785,32 @@ class BodyRenderer {
                 const rowHTML = this.rowmanager.getRowHTML(rowWithoutHiddenCols, row.meta);
                 el.innerHTML = rowHTML;
                 return el.children[0];
-            },
-            afterRender: () => {
-                this.restoreState();
-            }
-        };
-
-        if (!this.hyperlist) {
-            this.hyperlist = new HyperList(this.frozenBodyScrollable, config);
-        } else {
-            this.hyperlist.refresh(this.frozenBodyScrollable, config);
+            })(i));
         }
+        // let config = {
+        //     width: 'auto',
+        //     height: height,
+        //     itemHeight: this.options.cellHeight,
+        //     total: rows.length,
+        //     generate: (index) => {
+        //         const el = document.createElement('div');
+        //         const rowIndex = rowViewOrder[index];
+        //         const row = this.datamanager.getRow(rowIndex);
+        //         const rowWithoutHiddenCols = row.filter((col, i) => !hiddenColIndices.includes(i));
+        //         const rowHTML = this.rowmanager.getRowHTML(rowWithoutHiddenCols, row.meta);
+        //         el.innerHTML = rowHTML;
+        //         return el.children[0];
+        //     },
+        //     afterRender: () => {
+        //         this.restoreState();
+        //     }
+        // };
+        //
+        // if (!this.hyperlist) {
+        //     this.hyperlist = new HyperList(this.frozenBodyScrollable, config);
+        // } else {
+        //     this.hyperlist.refresh(this.frozenBodyScrollable, config);
+        // }
 
         this.renderFooter();
     }
@@ -4828,16 +4839,16 @@ class BodyRenderer {
             return null;
         }).filter(index => index !== null);
 
-        const computedStyle = getComputedStyle(this.bodyScrollable);
+        // const computedStyle = getComputedStyle(this.bodyScrollable);
 
-        console.log(computedStyle);
+        // console.log(computedStyle);
 
         const height = this.bodyScrollable.getBoundingClientRect().height;
 
         let config = {
             width: 'auto',
             height: height,
-            itemHeight: this.options.cellHeight,
+            itemHeight: this.options.cellHeight + 2,
             total: rows.length,
             generate: (index) => {
                 const el = document.createElement('div');
@@ -4874,7 +4885,6 @@ class BodyRenderer {
         if (!this.options.showTotalRow) return;
 
         const totalRow = this.getTotalRow();
-        console.log(totalRow);
         let html = this.rowmanager.getRowHTML(totalRow, {isTotalRow: 1, rowIndex: 'totalRow'});
 
         this.footer.innerHTML = html;
@@ -5276,12 +5286,9 @@ class Style {
         const rowWidth = $.style(firstRow, 'width');
 
         let width = bodyWidth > rowWidth ? rowWidth + 10 : bodyWidth;
-        console.log(rowWidth, bodyWidth, width);
         $.style(this.frozenBodyScrollable, {
             width: width + 'px !important'
         });
-
-        console.log(width);
 
         // remove the body height, so that it resets to it's original
         $.removeStyle(this.frozenBodyScrollable, 'height');

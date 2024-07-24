@@ -41,7 +41,7 @@
 
 .dt-frozen-scrollable {
     height: 40vw;
-    overflow: auto;
+    overflow: scroll;
     border-top: 2px solid var(--dt-border-color);
     -ms-overflow-style: none;  /* Internet Explorer 10+ */
     scrollbar-width: none;  /* Firefox */
