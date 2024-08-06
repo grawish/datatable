@@ -355,6 +355,7 @@ export default class ColumnManager {
             this.applyFilter(this.getAppliedFilters());
         };
         $.on(this.header, 'keydown', '.dt-filter', debounce(handler, 300));
+        $.on(this.frozenHeader, 'keydown', '.dt-filter', debounce(handler, 300));
     }
 
     applyFilter(filters) {
@@ -367,6 +368,12 @@ export default class ColumnManager {
     getAppliedFilters() {
         const filters = {};
         $.each('.dt-filter', this.header).map((input) => {
+            const value = input.value;
+            if (value) {
+                filters[input.dataset.colIndex] = value;
+            }
+        });
+        $.each('.dt-filter', this.frozenHeader).map((input) => {
             const value = input.value;
             if (value) {
                 filters[input.dataset.colIndex] = value;

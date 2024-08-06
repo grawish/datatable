@@ -188,6 +188,7 @@ export default class RowManager {
     showRows(rowIndices) {
         rowIndices = ensureArray(rowIndices);
         const rows = rowIndices.map(rowIndex => this.datamanager.getRow(rowIndex));
+        this.bodyRenderer.renderFrozenRows(rows);
         this.bodyRenderer.renderRows(rows);
     }
 

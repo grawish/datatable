@@ -3819,6 +3819,7 @@ class ColumnManager {
             this.applyFilter(this.getAppliedFilters());
         };
         $.on(this.header, 'keydown', '.dt-filter', debounce$1(handler, 300));
+        $.on(this.frozenHeader, 'keydown', '.dt-filter', debounce$1(handler, 300));
     }
 
     applyFilter(filters) {
@@ -3831,6 +3832,12 @@ class ColumnManager {
     getAppliedFilters() {
         const filters = {};
         $.each('.dt-filter', this.header).map((input) => {
+            const value = input.value;
+            if (value) {
+                filters[input.dataset.colIndex] = value;
+            }
+        });
+        $.each('.dt-filter', this.frozenHeader).map((input) => {
             const value = input.value;
             if (value) {
                 filters[input.dataset.colIndex] = value;
@@ -4116,6 +4123,7 @@ class RowManager {
     showRows(rowIndices) {
         rowIndices = ensureArray(rowIndices);
         const rows = rowIndices.map(rowIndex => this.datamanager.getRow(rowIndex));
+        this.bodyRenderer.renderFrozenRows(rows);
         this.bodyRenderer.renderRows(rows);
     }
 
@@ -4776,6 +4784,7 @@ class BodyRenderer {
 
         // const height = this.frozenBodyScrollable.getBoundingClientRect().height;
         // console.log(rows);
+        this.frozenBodyScrollable.innerHTML = '';
         for (let i in rows) {
             this.frozenBodyScrollable.appendChild(((index) => {
                 const el = document.createElement('div');
@@ -4838,10 +4847,6 @@ class BodyRenderer {
             }
             return null;
         }).filter(index => index !== null);
-
-        // const computedStyle = getComputedStyle(this.bodyScrollable);
-
-        // console.log(computedStyle);
 
         const height = this.bodyScrollable.getBoundingClientRect().height;
 

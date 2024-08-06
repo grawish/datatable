@@ -39,6 +39,7 @@ export default class BodyRenderer {
 
         // const height = this.frozenBodyScrollable.getBoundingClientRect().height;
         // console.log(rows);
+        this.frozenBodyScrollable.innerHTML = '';
         for (let i in rows) {
             this.frozenBodyScrollable.appendChild(((index) => {
                 const el = document.createElement('div');
@@ -101,10 +102,6 @@ export default class BodyRenderer {
             }
             return null;
         }).filter(index => index !== null);
-
-        // const computedStyle = getComputedStyle(this.bodyScrollable);
-
-        // console.log(computedStyle);
 
         const height = this.bodyScrollable.getBoundingClientRect().height;
 
